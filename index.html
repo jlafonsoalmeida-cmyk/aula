@@ -399,7 +399,15 @@ function analiza(){
   vistos=ahora;
   if(nuevos){ guardaFaltasLocal(); pintaLista(); textoCam(); if(navigator.vibrate) navigator.vibrate(30); }
 }
-$('#scanBtn').addEventListener('click',()=> stream ? pararCam() : iniciarCam());
+$('#scanBtn').addEventListener('click',()=>{
+  if(stream){ pararCam(); return; }
+  if(window.self!==window.top && /^https:/.test(location.href)){
+    const w=window.open(location.href,'_blank');
+    if(!w) toast('La página donde está insertada la app bloquea la cámara. Ábrela en su propia pestaña.');
+    return;
+  }
+  iniciarCam();
+});
 
 // ---------- chips ----------
 document.querySelectorAll('.chips').forEach(g=>g.addEventListener('click',e=>{
